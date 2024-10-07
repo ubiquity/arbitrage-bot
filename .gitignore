@@ -3,6 +3,8 @@
 # node
 node_modules
 # yarn2
+.github
+/.husky
 .yarn
 .pnp.cjs
 .pnp.loader.mjs
@@ -11,3 +13,40 @@ static/dist
 coverage
 junit.xml
 cypress/screenshots
+
+node_modules
+.env
+
+# Hardhat files
+/cache
+/artifacts
+
+# TypeChain files
+/typechain
+/typechain-types
+
+# solidity-coverage files
+/coverage
+/coverage.json
+
+# Hardhat Ignition default folder for deployments against a local node
+ignition/deployments/chain-31337
+
+node_modules
+.env
+.secret.ts
+
+# Hardhat files
+/cache
+/artifacts
+
+# TypeChain files
+/typechain
+/typechain-types
+
+# solidity-coverage files
+/coverage
+/coverage.json
+
+# Hardhat Ignition default folder for deployments against a local node
+ignition/deployments/chain-31337
