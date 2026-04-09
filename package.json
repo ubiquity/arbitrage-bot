@@ -2,7 +2,7 @@
   "name": "ts-template",
   "version": "1.0.0",
   "description": "Template repository with TypeScript support.",
-  "main": "build/index.ts",
+  "main": "src/index.ts",
   "author": "Ubiquity DAO",
   "license": "MIT",
   "engines": {
@@ -30,7 +30,8 @@
     "open-source"
   ],
   "dependencies": {
-    "dotenv": "^16.4.4"
+    "dotenv": "^16.4.4",
+    "ethers": "^6.13.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.6.1",
