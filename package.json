@@ -1,7 +1,7 @@
 {
   "name": "ts-template",
   "version": "1.0.0",
-  "description": "Template repository with TypeScript support.",
+  "description": "Multi-chain Curve Finance arbitrage bot targeting factory-stable-ng pools on Ethereum Mainnet and Gnosis Chain.",
   "main": "build/index.ts",
   "author": "Ubiquity DAO",
   "license": "MIT",
@@ -10,6 +10,8 @@
   },
   "scripts": {
     "start": "tsx build/esbuild-server.ts",
+    "arb:scan": "tsx src/multi-chain.ts scan",
+    "arb:monitor": "tsx src/multi-chain.ts monitor",
     "build": "tsx build/esbuild-build.ts",
     "format": "run-s format:lint format:prettier format:cspell",
     "format:lint": "eslint --fix .",
@@ -30,7 +32,8 @@
     "open-source"
   ],
   "dependencies": {
-    "dotenv": "^16.4.4"
+    "dotenv": "^16.4.4",
+    "ethers": "^6.11.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.6.1",
