@@ -1,70 +1,97 @@
-# `@ubiquity/ts-template`
+# Ubiquity Dollar arbitrage bot
 
-This template repository includes support for the following:
+A small TypeScript bot foundation for keeping the UUSD/LUSD market close to peg during the early project stage.
 
-- TypeScript
-- Environment Variables
-- Conventional Commits
-- Automatic deployment to Cloudflare Pages
+This PR intentionally keeps the first implementation at a **dry-run planning boundary**: it computes the single largest swap needed to restore the pool to the configured target price, but it does not sign, broadcast, or submit transactions. Live swap execution should be wired in a follow-up/reviewed operator integration with explicit RPC, router, slippage, nonce, and key-management decisions.
 
-## Testing
+## Why this shape
 
-### Cypress
+The bounty discussion clarified the desired behavior:
 
-To test with Cypress Studio UI, run
+- Run as a simple Node.js app/cron job, not as a UbiquityOS plugin.
+- The operator can fund the bot with UUSD and LUSD inventory.
+- Use swaps only for now.
+- On each run, do the max single swap required to balance the market.
+- If the bot does not have enough inventory to balance the market on that turn, do nothing.
 
-```shell
-yarn cy:open
-```
-
-Otherwise, to simply run the tests through the console, run
+## Install
 
 ```shell
-yarn cy:run
+npm install --ignore-scripts
 ```
 
-### Jest
+The upstream repo currently includes a Yarn lockfile. The command above was used only for local validation in this environment; it does not require credentials, wallets, or chain access.
 
-To start Jest tests, run
+## Configure
+
+Copy the example environment and replace the dry-run values with read-only pool and inventory data:
 
 ```shell
-yarn test
+cp .env.example .env
 ```
 
-## Sync any repository to latest `ts-template`
+```dotenv
+POOL_UUSD_RESERVE=1200
+POOL_LUSD_RESERVE=800
+POOL_FEE_BPS=30
+BOT_UUSD_BALANCE=100
+BOT_LUSD_BALANCE=260
+TARGET_PRICE=1
+PEG_TOLERANCE_BPS=50
+MAX_INPUT_AMOUNT=250
+```
 
-A bash function that can do this for you:
+## Run a dry-run plan
 
-```bash
-sync-branch-to-template() {
-  local branch_name
-  branch_name=$(git rev-parse --abbrev-ref HEAD)
-  local original_remote
-  original_remote=$(git remote show | head -n 1)
+```shell
+npm start
+```
 
-  # Add the template remote
-  git remote add template https://github.com/ubiquity/ts-template
+Example output when UUSD is below peg and the bot has enough LUSD inventory:
 
-  # Fetch from the template remote
-  git fetch template development
-
-  if [ "$branch_name" != "HEAD" ]; then
-    # Create a new branch and switch to it
-    git checkout -b "chore/merge-${branch_name}-template"
-
-    # Merge the changes from the template remote
-    git merge template/development --allow-unrelated-histories
-
-    # Switch back to the original branch
-    git checkout "$branch_name"
-
-    # Push the changes to the original remote
-    git push "$original_remote" HEAD:"$branch_name"
-  else
-    echo "You are in a detached HEAD state. Please checkout a branch first."
-  fi
-
-  # Remove the template remote
-  # git remote remove template
+```json
+{
+  "action": "swap-lusd-for-uusd",
+  "currentPrice": 0.6666666666666666,
+  "targetPrice": 1,
+  "postTradePrice": 1,
+  "requiredInputAmount": 180.33690783678162,
+  "trade": {
+    "inputToken": "LUSD",
+    "outputToken": "UUSD",
+    "inputAmount": 180.33690783678162,
+    "outputAmount": 220.20410288672872,
+    "effectiveInputAmount": 179.79589711327128,
+    "feeAmount": 0.5410107235103456
+  }
 }
 ```
+
+If the pool is inside the peg band, the bot holds. If the required balancing input exceeds the configured wallet balance or max input cap, it also holds and returns the reason plus the required amount.
+
+## Test
+
+```shell
+npx jest tests/peg-arbitrage.test.ts --runInBand
+```
+
+The focused tests cover:
+
+- within-band hold behavior;
+- UUSD-buy planning when UUSD is below peg;
+- UUSD-sell planning when UUSD is above peg;
+- hold behavior when inventory is insufficient for the full balancing swap;
+- hold behavior when the required balancing input exceeds the operator cap.
+
+## Safety boundary
+
+This package does **not**:
+
+- use private keys;
+- spend gas;
+- call live RPC endpoints;
+- submit swaps;
+- hold custody of funds;
+- make routing/slippage/execution claims.
+
+It returns deterministic JSON that a reviewed operator-side execution layer can consume after maintainers decide the exact router/pool/RPC/key-management path.

@@ -1,15 +1,15 @@
 {
-  "name": "ts-template",
+  "name": "arbitrage-bot",
   "version": "1.0.0",
-  "description": "Template repository with TypeScript support.",
-  "main": "build/index.ts",
+  "description": "Dry-run UUSD/LUSD peg arbitrage planner.",
+  "main": "src/index.ts",
   "author": "Ubiquity DAO",
   "license": "MIT",
   "engines": {
     "node": ">=20.10.0"
   },
   "scripts": {
-    "start": "tsx build/esbuild-server.ts",
+    "start": "tsx src/index.ts",
     "build": "tsx build/esbuild-build.ts",
     "format": "run-s format:lint format:prettier format:cspell",
     "format:lint": "eslint --fix .",

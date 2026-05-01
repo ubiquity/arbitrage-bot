@@ -1,5 +1,5 @@
 import esbuild from "esbuild";
-const typescriptEntries = ["static/main.ts"];
+const typescriptEntries = ["src/index.ts"];
 // const cssEntries = ["static/style.css"];
 const entries = [
   ...typescriptEntries,
@@ -19,7 +19,9 @@ export const esBuildContext: esbuild.BuildOptions = {
     ".ttf": "dataurl",
     ".svg": "dataurl",
   },
-  outdir: "static/dist",
+  outdir: "dist",
+  platform: "node",
+  target: "node20",
 };
 
 esbuild
