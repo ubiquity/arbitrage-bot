@@ -22,8 +22,15 @@ export const esBuildContext: esbuild.BuildOptions = {
   outdir: "static/dist",
 };
 
-esbuild
-  .build(esBuildContext)
+Promise.all([
+  esbuild.build(esBuildContext),
+  esbuild.build({
+    entryPoints: ["src/worker.ts"],
+    bundle: true,
+    format: "esm",
+    outfile: "static/_worker.js",
+  }),
+])
   .then(() => {
     console.log("\tesbuild complete");
   })

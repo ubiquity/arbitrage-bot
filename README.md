@@ -7,6 +7,32 @@ This template repository includes support for the following:
 - Conventional Commits
 - Automatic deployment to Cloudflare Pages
 
+## On-demand arbitrage API
+
+`POST /api/arbitrage` triggers the bot on demand. `yarn build` bundles a Cloudflare Pages advanced-mode worker into
+`static/_worker.js`, so the existing deployment artifact includes the API alongside the static site. Other routes still serve static assets.
+The `yarn start` static preview does not execute Pages workers; exercise the endpoint in a Pages runtime.
+
+This checkout does not contain a trading strategy. The endpoint delegates to a bot service configured in the Cloudflare Pages environment:
+
+- `ARBITRAGE_BOT_URL`: the HTTPS endpoint that runs the bot when it receives a POST request.
+- `ARBITRAGE_BOT_TOKEN` (optional secret): sent to that service as a bearer token, never to the browser.
+
+Without a valid bot URL, the endpoint returns `503` and does not attempt a trade. A successful upstream response returns
+`200 {"status":"triggered"}`; upstream HTTP or network failures return `502` without exposing internal details. The bot service remains
+responsible for trade decisions, transaction signing, and preventing duplicate/concurrent trades. The API does not retry failed triggers.
+
+The UI at `https://uusd.ubq.fi` (or a same-origin UI) can invoke it on a visit:
+
+```typescript
+const response = await fetch("https://<your-pages-host>/api/arbitrage", { method: "POST" });
+if (!response.ok) throw new Error("Unable to trigger arbitrage");
+```
+
+The endpoint supports CORS preflight and rejects other browser origins. CORS is not authentication: this is a public trigger, so apply
+appropriate rate limits at the deployment or bot service. GET, HEAD, and other unsupported methods return `405` without invoking the bot.
+No timer, scheduled job, or static asset request invokes the bot.
+
 ## Testing
 
 ### Cypress
