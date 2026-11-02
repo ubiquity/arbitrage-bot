@@ -2929,7 +2929,7 @@ cspell-trie-lib@8.4.0:
     "@cspell/cspell-types" "8.4.0"
     gensequence "^6.0.0"
 
-cspell@^8.4.0:
+cspell@^8.4.0, cspell:
   version "8.4.0"
   resolved "https://registry.yarnpkg.com/cspell/-/cspell-8.4.0.tgz#c53bc4e30db57fed1bfa9b6ef3ff566fb8f0f8d2"
   integrity sha512-1PW0w51V9n6NApf8Jbfji09jyRg7gHDm4acn1UbOd+v3gkefuaofYeMyLyupY5igloeIukTkvi3mxo+vu0hpxg==

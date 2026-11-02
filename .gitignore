@@ -8,6 +8,7 @@ node_modules
 .pnp.loader.mjs
 .env
 static/dist
+static/_worker.js
 coverage
 junit.xml
 cypress/screenshots
