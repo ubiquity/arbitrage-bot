@@ -26,7 +26,7 @@ export interface LegQuote {
 }
 
 export interface PriceQuote {
-  // LUSD per DAI / native token, scaled by UNIT. Do not assume stablecoins = $1.
+  // LUSD per DAI / native token, scaled by UNIT. Do not assume stable coins = $1.
   readonly daiInLusd: bigint;
   readonly nativeInLusd: Readonly<NativeAmounts>;
   readonly validUntil: number;
