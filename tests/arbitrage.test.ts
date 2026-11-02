@@ -19,7 +19,9 @@ function mockBot() {
   return jest.spyOn(globalThis, "fetch").mockResolvedValue(new Response(null, { status: 202 }));
 }
 
-afterEach(() => jest.restoreAllMocks());
+afterEach(() => {
+  jest.restoreAllMocks();
+});
 
 describe("Arbitrage endpoint", () => {
   it("triggers the configured bot once and returns an uncached JSON response", async () => {
